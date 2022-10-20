@@ -180,7 +180,7 @@ bool HelloWorld::init()
 				}
 
 
-				if (dynamic_cast<PawnPiece*>(board[7 - y][x].getPiece()) != nullptr && (y == 0 || y == 7)) {
+				if (!isFinished && dynamic_cast<PawnPiece*>(board[7 - y][x].getPiece()) != nullptr && (y == 0 || y == 7)) {
 					delete board[7 - y][x].getPiece();
 					board[7 - y][x].setPiece(new QueenPiece(turn));
 					drawNodeBoard[x][y]->removeAllChildrenWithCleanup(true);
