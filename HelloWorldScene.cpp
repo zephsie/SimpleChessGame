@@ -6,6 +6,8 @@
 #include "RookPiece.h"
 #include "KnightPiece.h"
 #include "AudioEngine.h"
+#include "ui/CocosGUI.h"
+#include "MainMenu.h"
 
 USING_NS_CC;
 
@@ -100,6 +102,19 @@ bool HelloWorld::init()
 	board[7][6].setPiece(new KnightPiece(Color::WHITE));
 	drawNodeBoard[6][0]->addChild(createPieceSprite(WH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.04));
 
+	auto button = ui::Button::create("CloseNormal.png", "CloseNormal.png");
+	button->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	
+	button->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
+		if (type == ui::Widget::TouchEventType::ENDED) {	
+			deconstruct();
+			goToMainMenuScene(sender);
+		}
+		});
+	
+
+	this->addChild(button, 50);
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [=](Touch* touch, Event* event) {
 		auto touchLocation = touch->getLocation();
@@ -154,27 +169,16 @@ bool HelloWorld::init()
 				if (isFinished) {
 					auto label = Label::createWithTTF("Game Over", "fonts/Marker Felt.ttf", 24);
 					label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-					this->addChild(label, 1);
+					label->setColor(Color3B::RED);
+					this->addChild(label, 100);
 					
 					auto listener = EventListenerTouchOneByOne::create();
 					listener->onTouchBegan = [=](Touch* touch, Event* event) {
-						Director::getInstance()->end();
+						deconstruct();
+						goToMainMenuScene(this);
+						
 						return true;
 					};
-
-					for (int i = 0; i < 8; i++) {
-						for (int j = 0; j < 8; j++) {
-							drawNodeBoard[i][j]->removeAllChildrenWithCleanup(true);
-						}
-					}
-
-					for (int i = 0; i < 8; i++) {
-						for (int j = 0; j < 8; j++) {
-							if (board[i][j].getPiece() != nullptr) {
-								delete board[i][j].getPiece();
-							}
-						}
-					}
 
 					_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, label);
 				}
@@ -201,12 +205,32 @@ bool HelloWorld::init()
 	return true;
 }
 
+void HelloWorld::goToMainMenuScene(cocos2d::Ref* sender)
+{
+	auto scene = MainMenu::createScene();
+
+	Director::getInstance()->replaceScene(TransitionFade::create(3, scene));
+}
+
 cocos2d::Sprite* HelloWorld::createPieceSprite(const char* filename, cocos2d::Vec2 position, float scale)
 {
 	auto sprite = Sprite::create(filename);
 	sprite->setPosition(position);
 	sprite->setScale(scale);
 	return sprite;
+}
+
+void HelloWorld::deconstruct()
+{
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (board[i][j].getPiece() != nullptr) {
+				delete board[i][j].getPiece();
+			}
+		}
+	}
+
+	AudioEngine::end();
 }
 
 int* HelloWorld::getIndexOnClick(cocos2d::Vec2 touchLocation)
@@ -216,4 +240,3 @@ int* HelloWorld::getIndexOnClick(cocos2d::Vec2 touchLocation)
 	int y = touchLocation.y / (visibleSize.height / 8);
 	return new int[2] { x, y };
 }
-
