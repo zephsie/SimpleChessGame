@@ -1,10 +1,6 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "extensions/cocos-ext.h"
-#include "ui/CocosGUI.h"
-
-USING_NS_CC::ui;
 
 class MainMenu : public cocos2d::Layer
 {
@@ -16,6 +12,5 @@ public:
 	CREATE_FUNC(MainMenu);
 	
 private:
-
-	void touchEvent(Ref* pSender, Widget::TouchEventType type);
+	void goToGameScene(cocos2d::Ref* sender);
 };

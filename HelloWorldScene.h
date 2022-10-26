@@ -3,7 +3,6 @@
 
 #include "cocos2d.h"
 #include "Spot.h"
-#include "DEFINITIONS.h"
 
 class HelloWorld : public cocos2d::Scene {
 private:	
@@ -24,6 +23,8 @@ private:
     void deconstruct();
 
     int* getIndexOnClick(cocos2d::Vec2 touchLocation);	
+
+    void goToMainMenuScene(cocos2d::Ref* sender);
 	
 public:
     static cocos2d::Scene* createScene();
@@ -31,8 +32,6 @@ public:
     virtual bool init();
     
     CREATE_FUNC(HelloWorld);
-
-	void goToMainMenuScene(cocos2d::Ref* sender);
 };
 
 #endif

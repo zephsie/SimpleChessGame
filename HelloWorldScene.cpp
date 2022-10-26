@@ -8,6 +8,7 @@
 #include "AudioEngine.h"
 #include "ui/CocosGUI.h"
 #include "MainMenu.h"
+#include "DEFINITIONS.h"
 
 USING_NS_CC;
 
@@ -44,7 +45,7 @@ bool HelloWorld::init()
 			drawNodeBoard[i][j] = DrawNode::create();
 			drawNodeBoard[i][j]->drawSolidRect(Vec2(0, 0), Vec2(visibleSize.width / 8, visibleSize.height / 8), isWhite ? Color4F::WHITE : Color4F::GRAY);
 			drawNodeBoard[i][j]->setPosition(Vec2(visibleSize.width / 8 * i, visibleSize.height / 8 * j));
-			this->addChild(drawNodeBoard[i][j]);
+			this->addChild(drawNodeBoard[i][j], 100);
 		}
 	}
 
@@ -52,8 +53,8 @@ bool HelloWorld::init()
 		board[1][i].setPiece(new PawnPiece(Color::BLACK));
 		board[6][i].setPiece(new PawnPiece(Color::WHITE));
 
-		drawNodeBoard[i][1]->addChild(createPieceSprite(WP, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
-		drawNodeBoard[i][6]->addChild(createPieceSprite(BP, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+		drawNodeBoard[i][1]->addChild(createPieceSprite(WP, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
+		drawNodeBoard[i][6]->addChild(createPieceSprite(BP, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 	}
 
 	board[0][2].setPiece(new BishopPiece(Color::BLACK));
@@ -61,46 +62,46 @@ bool HelloWorld::init()
 	board[7][2].setPiece(new BishopPiece(Color::WHITE));
 	board[7][5].setPiece(new BishopPiece(Color::WHITE));
 
-	drawNodeBoard[2][7]->addChild(createPieceSprite(BB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.13));
-	drawNodeBoard[5][7]->addChild(createPieceSprite(BB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.13));
-	drawNodeBoard[2][0]->addChild(createPieceSprite(WB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.11));
-	drawNodeBoard[5][0]->addChild(createPieceSprite(WB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.11));
+	drawNodeBoard[2][7]->addChild(createPieceSprite(BB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.13), 100);
+	drawNodeBoard[5][7]->addChild(createPieceSprite(BB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.13), 100);
+	drawNodeBoard[2][0]->addChild(createPieceSprite(WB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.11), 100);
+	drawNodeBoard[5][0]->addChild(createPieceSprite(WB, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.11), 100);
 
 	board[0][4].setPiece(new KingPiece(Color::BLACK));
 	board[7][4].setPiece(new KingPiece(Color::WHITE));
 
-	drawNodeBoard[4][7]->addChild(createPieceSprite(BK, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.035));
-	drawNodeBoard[4][0]->addChild(createPieceSprite(WK, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.11));
+	drawNodeBoard[4][7]->addChild(createPieceSprite(BK, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.035), 100);
+	drawNodeBoard[4][0]->addChild(createPieceSprite(WK, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.11), 100);
 
 	board[0][3].setPiece(new QueenPiece(Color::BLACK));
 	board[7][3].setPiece(new QueenPiece(Color::WHITE));
 
-	drawNodeBoard[3][7]->addChild(createPieceSprite(BQ, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.035));
-	drawNodeBoard[3][0]->addChild(createPieceSprite(WQ, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.09));
+	drawNodeBoard[3][7]->addChild(createPieceSprite(BQ, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.035), 100);
+	drawNodeBoard[3][0]->addChild(createPieceSprite(WQ, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.09), 100);
 
 	board[0][0].setPiece(new RookPiece(Color::BLACK));
-	drawNodeBoard[0][7]->addChild(createPieceSprite(BR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+	drawNodeBoard[0][7]->addChild(createPieceSprite(BR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 
 	board[0][7].setPiece(new RookPiece(Color::BLACK));
-	drawNodeBoard[7][7]->addChild(createPieceSprite(BR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+	drawNodeBoard[7][7]->addChild(createPieceSprite(BR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 
 	board[7][0].setPiece(new RookPiece(Color::WHITE));
-	drawNodeBoard[0][0]->addChild(createPieceSprite(WR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+	drawNodeBoard[0][0]->addChild(createPieceSprite(WR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 
 	board[7][7].setPiece(new RookPiece(Color::WHITE));
-	drawNodeBoard[7][0]->addChild(createPieceSprite(WR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+	drawNodeBoard[7][0]->addChild(createPieceSprite(WR, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 
 	board[0][1].setPiece(new KnightPiece(Color::BLACK));
-	drawNodeBoard[1][7]->addChild(createPieceSprite(BH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+	drawNodeBoard[1][7]->addChild(createPieceSprite(BH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 
 	board[0][6].setPiece(new KnightPiece(Color::BLACK));
-	drawNodeBoard[6][7]->addChild(createPieceSprite(BH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1));
+	drawNodeBoard[6][7]->addChild(createPieceSprite(BH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.1), 100);
 
 	board[7][1].setPiece(new KnightPiece(Color::WHITE));
-	drawNodeBoard[1][0]->addChild(createPieceSprite(WH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.04));
+	drawNodeBoard[1][0]->addChild(createPieceSprite(WH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.04), 100);
 
 	board[7][6].setPiece(new KnightPiece(Color::WHITE));
-	drawNodeBoard[6][0]->addChild(createPieceSprite(WH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.04));
+	drawNodeBoard[6][0]->addChild(createPieceSprite(WH, Vec2(visibleSize.width / 16, visibleSize.height / 16), 0.04), 100);
 
 	auto button = ui::Button::create("CloseNormal.png", "CloseNormal.png");
 	button->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
@@ -113,7 +114,7 @@ bool HelloWorld::init()
 		});
 	
 
-	this->addChild(button, 50);
+	this->addChild(button, 150);
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [=](Touch* touch, Event* event) {
@@ -154,23 +155,44 @@ bool HelloWorld::init()
 				drawNodeBoard[xPrev][yPrev]->clear();
 				drawNodeBoard[xPrev][yPrev]->drawSolidRect(Vec2(0, 0), Vec2(visibleSize.width / 8, visibleSize.height / 8), board[7 - yPrev][xPrev].getColor() != Color::WHITE ? Color4F::WHITE : Color4F::GRAY);
 				
-				if (board[7 - y][x].getPiece() != nullptr) {
-					drawNodeBoard[x][y]->removeAllChildrenWithCleanup(true);
-				}
+				drawNodeBoard[x][y]->removeAllChildrenWithCleanup(true);
 
 				Sprite* spriteToCLone = dynamic_cast<Sprite*>(drawNodeBoard[xPrev][yPrev]->getChildren().at(0));
 				Sprite* clonedSprite = Sprite::createWithTexture(spriteToCLone->getTexture());
 				clonedSprite->setScale(spriteToCLone->getScaleX(), spriteToCLone->getScaleY());
 				clonedSprite->setPosition(spriteToCLone->getPosition());
 				
-				drawNodeBoard[x][y]->addChild(clonedSprite);
+				drawNodeBoard[x][y]->addChild(clonedSprite, 100);
 				drawNodeBoard[xPrev][yPrev]->removeAllChildrenWithCleanup(true);
 
-				if (isFinished) {
-					auto label = Label::createWithTTF("Game Over", "fonts/Marker Felt.ttf", 24);
-					label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-					label->setColor(Color3B::RED);
-					this->addChild(label, 100);
+				if (isFinished) {				
+					auto filter = LayerColor::create(Color4B(0, 0, 0, 0));
+					this->addChild(filter, 150);
+					auto fade = FadeTo::create(2.0f, 255);
+					filter->runAction(fade);
+
+					auto title = cocos2d::Sprite::create(GAMEOVER);
+					title->setPosition(cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 1.2));
+					title->setScaleX(visibleSize.width / title->getContentSize().width / 1.1);
+					title->setScaleY(visibleSize.width / title->getContentSize().width / 1.1);
+					this->addChild(title, 200);
+
+					Sprite* winner = turn == Color::WHITE ? Sprite::create(WPLAYER) : Sprite::create(BPLAYER);
+
+					winner->setPosition(cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 6));
+					winner->setScaleX(visibleSize.width / winner->getContentSize().width / 1.5);
+					winner->setScaleY(visibleSize.width / winner->getContentSize().width / 1.5);
+					this->addChild(winner, 200);
+
+					auto jumpscare = Sprite::create(JUMPSCARE);
+
+					jumpscare->setScaleX(visibleSize.width / jumpscare->getContentSize().width / 3);
+					jumpscare->setScaleY(visibleSize.width / jumpscare->getContentSize().width / 3);
+					jumpscare->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+					this->addChild(jumpscare, 200);
+					
+					auto scale = ScaleTo::create(2.0f, 1.1f);
+					jumpscare->runAction(scale);
 					
 					auto listener = EventListenerTouchOneByOne::create();
 					listener->onTouchBegan = [=](Touch* touch, Event* event) {
@@ -180,7 +202,7 @@ bool HelloWorld::init()
 						return true;
 					};
 
-					_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, label);
+					_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 				}
 
 
@@ -188,7 +210,7 @@ bool HelloWorld::init()
 					delete board[7 - y][x].getPiece();
 					board[7 - y][x].setPiece(new QueenPiece(turn));
 					drawNodeBoard[x][y]->removeAllChildrenWithCleanup(true);
-					drawNodeBoard[x][y]->addChild(createPieceSprite(turn == Color::WHITE ? WQ : BQ, Vec2(visibleSize.width / 16, visibleSize.height / 16), turn == Color::WHITE ? 0.08 : 0.035));
+					drawNodeBoard[x][y]->addChild(createPieceSprite(turn == Color::WHITE ? WQ : BQ, Vec2(visibleSize.width / 16, visibleSize.height / 16), turn == Color::WHITE ? 0.08 : 0.035), 100);
 				}
 
 				turn = turn == Color::WHITE ? Color::BLACK : Color::WHITE;				
@@ -209,7 +231,7 @@ void HelloWorld::goToMainMenuScene(cocos2d::Ref* sender)
 {
 	auto scene = MainMenu::createScene();
 
-	Director::getInstance()->replaceScene(TransitionFade::create(3, scene));
+	Director::getInstance()->replaceScene(TransitionFade::create(1, scene));
 }
 
 cocos2d::Sprite* HelloWorld::createPieceSprite(const char* filename, cocos2d::Vec2 position, float scale)
