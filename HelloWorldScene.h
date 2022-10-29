@@ -26,6 +26,10 @@ private:
 
     void goToMainMenuScene(cocos2d::Ref* sender);
 
+    void showWinScene();
+
+    void showDrawScene();
+
 public:
     static cocos2d::Scene* createScene();
 

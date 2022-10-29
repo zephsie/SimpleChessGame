@@ -33,6 +33,22 @@ bool HelloWorld::init() {
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
 
+    auto menuButton = ui::Button::create(TREE, TREE);
+    menuButton->setPosition(cocos2d::Vec2(visibleSize.width / 50, visibleSize.height / 2));
+    menuButton->setScaleX(visibleSize.width / menuButton->getContentSize().width / 15);
+    menuButton->setScaleY(visibleSize.width / menuButton->getContentSize().width / 15);
+	menuButton->setRotation(90);
+	
+
+    menuButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
+        if (type == ui::Widget::TouchEventType::ENDED) {
+            AudioEngine::play2d(CAPTURE_SOUND);
+            showDrawScene();
+        }
+    });
+
+    this->addChild(menuButton, 125);			
+
     for (int i = 0; i < 8; i++) {
         board[i] = new Spot[8];
         for (int j = 0; j < 8; j++) {
@@ -178,46 +194,8 @@ bool HelloWorld::init() {
                 drawNodeBoard[xPrev][yPrev]->removeAllChildrenWithCleanup(true);
 
                 if (isFinished) {
-                    auto filter = LayerColor::create(Color4B(0, 0, 0, 0));
-                    this->addChild(filter, 150);
-                    auto fade = FadeTo::create(2.0f, 255);
-                    filter->runAction(fade);
-
-                    auto title = cocos2d::Sprite::create(GAMEOVER);
-                    title->setPosition(cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 1.2));
-                    title->setScaleX(visibleSize.width / title->getContentSize().width / 1.1);
-                    title->setScaleY(visibleSize.width / title->getContentSize().width / 1.1);
-                    this->addChild(title, 200);
-
-                    Sprite* winner = turn == Color::WHITE ? Sprite::create(WPLAYER) : Sprite::create(BPLAYER);
-
-                    winner->setPosition(cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 6));
-                    winner->setScaleX(visibleSize.width / winner->getContentSize().width / 1.5);
-                    winner->setScaleY(visibleSize.width / winner->getContentSize().width / 1.5);
-                    this->addChild(winner, 200);
-
-                    auto jumpscare = Sprite::create(JUMPSCARE);
-
-                    jumpscare->setScaleX(visibleSize.width / jumpscare->getContentSize().width / 3);
-                    jumpscare->setScaleY(visibleSize.width / jumpscare->getContentSize().width / 3);
-                    jumpscare->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-                    this->addChild(jumpscare, 200);
-
-                    auto scale = ScaleTo::create(2.0f, 1.1f);
-                    jumpscare->runAction(scale);
-
-                    auto listener = EventListenerTouchOneByOne::create();
-                    listener->onTouchBegan = [=](Touch* touch, Event* event) {
-                        AudioEngine::stopAll();
-                        deconstruct();
-                        goToMainMenuScene(this);
-
-                        return true;
-                    };
-
-                    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+                    showWinScene();
                 }
-
 
                 if (!isFinished && dynamic_cast<PawnPiece*>(board[7 - y][x].getPiece()) != nullptr &&
                     (y == 0 || y == 7)) {
@@ -250,6 +228,91 @@ void HelloWorld::goToMainMenuScene(cocos2d::Ref* sender) {
     Director::getInstance()->replaceScene(TransitionFade::create(1, scene));
 }
 
+void HelloWorld::showWinScene() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+	
+    auto filter = LayerColor::create(Color4B(0, 0, 0, 0));
+    this->addChild(filter, 150);
+    auto fade = FadeTo::create(2.0f, 255);
+    filter->runAction(fade);
+
+    auto title = Sprite::create(GAMEOVER);
+    title->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 1.2));
+    title->setScaleX(visibleSize.width / title->getContentSize().width / 1.1);
+    title->setScaleY(visibleSize.width / title->getContentSize().width / 1.1);
+    this->addChild(title, 200);
+
+    Sprite* winner = turn == Color::WHITE ? Sprite::create(WPLAYER) : Sprite::create(BPLAYER);
+
+    winner->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 7));
+    winner->setScaleX(visibleSize.width / winner->getContentSize().width / 1.5);
+    winner->setScaleY(visibleSize.width / winner->getContentSize().width / 1.5);
+    this->addChild(winner, 200);
+
+    auto jumpscare = Sprite::create(JUMPSCARE);
+
+    jumpscare->setScaleX(visibleSize.width / jumpscare->getContentSize().width / 3);
+    jumpscare->setScaleY(visibleSize.width / jumpscare->getContentSize().width / 3);
+    jumpscare->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(jumpscare, 200);
+
+    auto scale = ScaleTo::create(2.0f, 1.1f);
+    jumpscare->runAction(scale);
+
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = [=](Touch* touch, Event* event) {
+        AudioEngine::stopAll();
+        deconstruct();
+        goToMainMenuScene(this);
+
+        return true;
+    };
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void HelloWorld::showDrawScene() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+
+    auto filter = LayerColor::create(Color4B(0, 0, 0, 0));
+    this->addChild(filter, 150);
+    auto fade = FadeTo::create(2.0f, 255);
+    filter->runAction(fade);
+
+    auto title = Sprite::create(GAMEOVER);
+    title->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 1.2));
+    title->setScaleX(visibleSize.width / title->getContentSize().width / 1.1);
+    title->setScaleY(visibleSize.width / title->getContentSize().width / 1.1);
+    this->addChild(title, 200);
+
+	auto draw = Sprite::create(DRAW);
+    draw->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 7));
+    draw->setScaleX(visibleSize.width / draw->getContentSize().width / 2.5);
+    draw->setScaleY(visibleSize.width / draw->getContentSize().width / 2.5);
+    this->addChild(draw, 200);
+
+    auto jumpscare = Sprite::create(JUMPSCARE2);
+
+    jumpscare->setScaleX(visibleSize.width / jumpscare->getContentSize().width / 3);
+    jumpscare->setScaleY(visibleSize.width / jumpscare->getContentSize().width / 3);
+    jumpscare->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(jumpscare, 200);
+
+    auto scale = ScaleTo::create(2.0f, 0.75f);
+    jumpscare->runAction(scale);
+
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = [=](Touch* touch, Event* event) {
+        AudioEngine::stopAll();
+        deconstruct();
+        goToMainMenuScene(this);
+
+        return true;
+    };
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
 cocos2d::Sprite* HelloWorld::createPieceSprite(const char* filename, cocos2d::Vec2 position, float scale) {
     auto sprite = Sprite::create(filename);
     sprite->setPosition(position);
@@ -265,8 +328,6 @@ void HelloWorld::deconstruct() {
             }
         }
     }
-
-    AudioEngine::end();
 }
 
 int* HelloWorld::getIndexOnClick(cocos2d::Vec2 touchLocation) {
