@@ -1,4 +1,5 @@
 #include "PawnPiece.h"
+#include <stdlib.h>
 
 bool PawnPiece::validation(int xStart, int yStart, int xEnd, int yEnd, Spot **board) {
     if (this->getColor() == Color::WHITE && xEnd == xStart - 1 && yStart == yEnd) {

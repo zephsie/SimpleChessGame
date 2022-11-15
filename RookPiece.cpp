@@ -9,7 +9,7 @@ bool RookPiece::validation(int xStart, int yStart, int xEnd, int yEnd, Spot **bo
                 }
             }
 
-			return true;
+            return true;
         } else {
             for (int i = yStart - 1; i > yEnd; i--) {
                 if (board[xStart][i].getPiece() != nullptr) {
@@ -17,7 +17,7 @@ bool RookPiece::validation(int xStart, int yStart, int xEnd, int yEnd, Spot **bo
                 }
             }
 
-			return true;
+            return true;
         }
     } else if (yStart == yEnd) {
         if (xStart < xEnd) {
@@ -27,7 +27,7 @@ bool RookPiece::validation(int xStart, int yStart, int xEnd, int yEnd, Spot **bo
                 }
             }
 
-			return true;
+            return true;
         } else {
             for (int i = xStart - 1; i > xEnd; i--) {
                 if (board[i][yStart].getPiece() != nullptr) {
@@ -35,7 +35,7 @@ bool RookPiece::validation(int xStart, int yStart, int xEnd, int yEnd, Spot **bo
                 }
             }
 
-			return true;
+            return true;
         }
     }
 

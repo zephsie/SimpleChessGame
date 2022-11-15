@@ -22,6 +22,12 @@
 #define JUMPSCARE "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\JUMPSCARE.jpg"
 #define JUMPSCARE2 "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\JUMPSCARE2.jpg"
 #define DRAW "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\DRAW.png"
+#define BLACKBG "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\BLACK.png"
+#define SKIP "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\SKIP.png"
+#define SKIPP "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\SKIPP.png"
+#define SEND "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\SEND.png"
+#define SENDP "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\SENDP.png"
+#define ENTER "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\ENTER.png"
 
 #define BG "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\BG.jpg"
 #define LOGO "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\LOGO.png"
@@ -33,5 +39,7 @@
 #define CAPTURE_SOUND "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\CAPTURE.mp3"
 
 #define MUSIC "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\MUSIC.mp3"
+
+#define SERVER "http://localhost:8080/Chess/players"
 
 #endif

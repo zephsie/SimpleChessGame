@@ -6,7 +6,7 @@
 
 USING_NS_CC;
 
-cocos2d::Scene* MainMenu::createScene() {
+cocos2d::Scene *MainMenu::createScene() {
     auto scene = cocos2d::Scene::create();
     auto layer = MainMenu::create();
     scene->addChild(layer);
@@ -39,20 +39,20 @@ bool MainMenu::init() {
     button->setScaleX(visibleSize.width / button->getContentSize().width / 2);
     button->setScaleY(visibleSize.width / button->getContentSize().width / 2);
 
-    button->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
+    button->addTouchEventListener([&](Ref *sender, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::ENDED) {
             AudioEngine::stopAll();
             AudioEngine::play2d(CAPTURE_SOUND);
             goToGameScene(sender);
         }
-        });
+    });
 
     this->addChild(button);
 
     return true;
 }
 
-void MainMenu::goToGameScene(cocos2d::Ref* sender) {
+void MainMenu::goToGameScene(cocos2d::Ref *sender) {
     auto scene = HelloWorld::createScene();
 
     cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(1, scene));

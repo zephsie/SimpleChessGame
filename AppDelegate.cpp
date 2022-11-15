@@ -27,7 +27,7 @@ AppDelegate::~AppDelegate() {
 }
 
 void AppDelegate::initGLContextAttrs() {
-    GLContextAttrs glContextAttrs = { 8, 8, 8, 8, 24, 8, 0 };
+    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
 
     GLView::setGLContextAttrs(glContextAttrs);
 }
@@ -42,7 +42,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     if (!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect("SimpleChessGame",
-            cocos2d::Rect(0, 0, myResolutionSize.width, myResolutionSize.height));
+                                            cocos2d::Rect(0, 0, myResolutionSize.width, myResolutionSize.height));
 #else
         glview = GLViewImpl::create("SimpleChessGame");
 #endif
@@ -54,15 +54,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     if (frameSize.height > mediumResolutionSize.height) {
         director->setContentScaleFactor(MIN(largeResolutionSize.height / designResolutionSize.height,
-            largeResolutionSize.width / designResolutionSize.width));
-    }
-    else if (frameSize.height > smallResolutionSize.height) {
+                                            largeResolutionSize.width / designResolutionSize.width));
+    } else if (frameSize.height > smallResolutionSize.height) {
         director->setContentScaleFactor(MIN(mediumResolutionSize.height / designResolutionSize.height,
-            mediumResolutionSize.width / designResolutionSize.width));
-    }
-    else {
+                                            mediumResolutionSize.width / designResolutionSize.width));
+    } else {
         director->setContentScaleFactor(MIN(smallResolutionSize.height / designResolutionSize.height,
-            smallResolutionSize.width / designResolutionSize.width));
+                                            smallResolutionSize.width / designResolutionSize.width));
     }
 
     register_all_packages();
