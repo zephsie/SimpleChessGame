@@ -29,6 +29,8 @@ bool HelloWorld::init() {
     board = new Spot *[8];
     isOnline = true;
 
+    serverUrl = SERVER;
+
     player1 = new Player();
     player2 = new Player();
 
@@ -38,19 +40,19 @@ bool HelloWorld::init() {
     Size visibleSize = Director::getInstance()->getVisibleSize();
 	
 
+	hidden = Label::createWithTTF("", "fonts/BleedingPixels.ttf", 12);	
+	hidden->setPosition(Vec2(visibleSize.width / 2, 6 * visibleSize.height / 7));
+    hidden->setVisible(false);
+	hidden->setTextColor(Color4B::RED);	
+	this->addChild(hidden, 1000);
+
+	
     auto menuButton = ui::Button::create(TREE, TREE);
     menuButton->setPosition(cocos2d::Vec2(visibleSize.width / 50, visibleSize.height / 2));
     menuButton->setScaleX(visibleSize.width / menuButton->getContentSize().width / 15);
     menuButton->setScaleY(visibleSize.width / menuButton->getContentSize().width / 15);
     menuButton->setRotation(90);
-
-    menuButton->addTouchEventListener([&](Ref *sender, ui::Widget::TouchEventType type) {
-        if (type == ui::Widget::TouchEventType::ENDED) {
-            AudioEngine::play2d(CAPTURE_SOUND);
-            showDrawScene();
-        }
-    });
-
+	menuButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::drawEvent, this));
     this->addChild(menuButton, 125);
 
 
@@ -65,38 +67,37 @@ bool HelloWorld::init() {
     ui::EditBox *player1Box = player1Box = ui::EditBox::create(Size(visibleSize.width / 1.25, visibleSize.height / 10), ui::Scale9Sprite::create(BLACKBG));
     player1Box->setPosition(Vec2(visibleSize.width / 2, 3 * visibleSize.height / 4));
 
-    player1Box->setPlaceholderFontSize(16);
+	player1Box->setPlaceholderFont("fonts/BleedingPixels.ttf", 15);
     player1Box->setPlaceHolder("Player One Username");
     player1Box->setPlaceholderFontColor(Color3B::RED);
-
+	
+	player1Box->setFont("fonts/BleedingPixels.ttf", 16);
     player1Box->setMaxLength(16);
     player1Box->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
     player1Box->setInputMode(ui::EditBox::InputMode::SINGLE_LINE);
     player1Box->setInputFlag(ui::EditBox::InputFlag::SENSITIVE);
     player1Box->setTextHorizontalAlignment(TextHAlignment::CENTER);
 
-    player1Box->setFontSize(16);
     player1Box->setFontColor(Color3B::RED);
     player1Box->setDelegate(this);
     player1Box->setName("player1Box");
     player1Box->setTag(1);
     this->addChild(player1Box, 500);
 
-
     ui::EditBox *player2Box = player2Box = ui::EditBox::create(Size(visibleSize.width / 1.25, visibleSize.height / 10), ui::Scale9Sprite::create(BLACKBG));
     player2Box->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 
-    player2Box->setPlaceholderFontSize(16);
+    player2Box->setPlaceholderFont("fonts/BleedingPixels.ttf", 15);
     player2Box->setPlaceHolder("Player Two Username");
     player2Box->setPlaceholderFontColor(Color3B::RED);
-
+	
+    player2Box->setFont("fonts/BleedingPixels.ttf", 16);
     player2Box->setMaxLength(16);
     player2Box->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
     player2Box->setInputMode(ui::EditBox::InputMode::SINGLE_LINE);
     player2Box->setInputFlag(ui::EditBox::InputFlag::SENSITIVE);
     player2Box->setTextHorizontalAlignment(TextHAlignment::CENTER);
 
-    player2Box->setFontSize(16);
     player2Box->setFontColor(Color3B::RED);
     player2Box->setDelegate(this);
     player2Box->setName("player2Box");
@@ -109,21 +110,7 @@ bool HelloWorld::init() {
     skipButton->setPosition(cocos2d::Vec2(visibleSize.width / 4, visibleSize.height / 2 - visibleSize.height / 3));
     skipButton->setScaleX(visibleSize.width / skipButton->getContentSize().width / 4);
     skipButton->setScaleY(visibleSize.width / skipButton->getContentSize().width / 4);
-
-    skipButton->addTouchEventListener([&](Ref *sender, ui::Widget::TouchEventType type) {
-        if (type == ui::Widget::TouchEventType::ENDED) {
-            AudioEngine::play2d(CAPTURE_SOUND);
-
-            isOnline = false;
-
-            this->removeChildByName("player1Box");
-            this->removeChildByName("player2Box");
-            this->removeChildByName("skipButton");
-            this->removeChildByName("blackFilter");
-            this->removeChildByName("sendButton");
-        }
-    });
-
+	skipButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipEvent, this));
     this->addChild(skipButton, 500);
 
 
@@ -132,27 +119,7 @@ bool HelloWorld::init() {
     sendButton->setPosition(cocos2d::Vec2(visibleSize.width / 4 * 3, visibleSize.height / 2 - visibleSize.height / 3));
     sendButton->setScaleX(visibleSize.width / sendButton->getContentSize().width / 4);
     sendButton->setScaleY(visibleSize.width / sendButton->getContentSize().width / 4);
-
-    sendButton->addTouchEventListener([&](Ref *sender, ui::Widget::TouchEventType type) {
-        if (type == ui::Widget::TouchEventType::ENDED) {
-            if (player1->name.size() >= 2 && !player1->name.empty() && player2->name.size() >= 2 &&
-                !player2->name.empty()) {
-                AudioEngine::play2d(CAPTURE_SOUND);
-
-                serverConnector = ServerConnector::instance();
-					
-                serverConnector->savePlayer(player1);
-                serverConnector->savePlayer(player2);
-
-                this->removeChildByName("player1Box");
-                this->removeChildByName("player2Box");
-                this->removeChildByName("skipButton");
-                this->removeChildByName("blackFilter");
-                this->removeChildByName("sendButton");
-            }
-        }
-    });
-
+    sendButton->addTouchEventListener(CC_CALLBACK_2(HelloWorld::startEvent, this));
     this->addChild(sendButton, 500);
 
 
@@ -312,8 +279,61 @@ bool HelloWorld::init() {
 
 void HelloWorld::goToMainMenuScene(cocos2d::Ref *sender) {
     auto scene = MainMenu::createScene();
-
     Director::getInstance()->replaceScene(TransitionFade::create(1, scene));
+}
+
+void HelloWorld::skipEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+    if (type == ui::Widget::TouchEventType::ENDED) {
+        AudioEngine::play2d(CAPTURE_SOUND);
+
+        isOnline = false;
+
+        this->removeChildByName("player1Box");
+        this->removeChildByName("player2Box");
+        this->removeChildByName("skipButton");
+        this->removeChildByName("blackFilter");
+        this->removeChildByName("sendButton");
+    }
+}
+
+void HelloWorld::startEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+    if (type == ui::Widget::TouchEventType::ENDED) {
+        if (player1->name.size() >= 2 && !player1->name.empty() && player2->name.size() >= 2 &&
+            !player2->name.empty()) {
+            AudioEngine::play2d(CAPTURE_SOUND);
+
+            savePlayer(player1);
+            savePlayer(player2);
+
+            this->removeChildByName("player1Box");
+            this->removeChildByName("player2Box");
+            this->removeChildByName("skipButton");
+            this->removeChildByName("blackFilter");
+            this->removeChildByName("sendButton");
+        }
+    }
+}
+
+void HelloWorld::drawEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+    if (type == ui::Widget::TouchEventType::ENDED) {
+        AudioEngine::play2d(CAPTURE_SOUND);
+        showDrawScene();
+    }
+}
+
+void HelloWorld::destroyEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+    AudioEngine::stopAll();
+	
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            delete board[i][j].getPiece();
+        }
+    }
+
+    delete player1;
+    delete player2;
+	
+    goToMainMenuScene(this);
 }
 
 void HelloWorld::showWinScene() {
@@ -342,41 +362,34 @@ void HelloWorld::showWinScene() {
         winner->setScaleY(visibleSize.width / winner->getContentSize().width / 1.5);
         this->addChild(winner, 200);
     } else {
+        hidden->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 7));
+		hidden->setAlignment(TextHAlignment::CENTER);
+		
         if (turn == Color::WHITE) {
-            serverConnector->addWin(player1->id);
-			text = "Player named " + player1->name + "\nwith UID " + std::to_string(player1->id) + " and " + std::to_string(player1->score) + " wins won!";
+            addWin(player1);
         } else {
-            serverConnector->addWin(player2->id);
-			text = "Player named " + player2->name + "\nwith UID " + std::to_string(player2->id) + " and " + std::to_string(player2->score) + " wins won!";
+            addWin(player2);
         }
-
-        auto label = Label::createWithTTF(text, "fonts/arial.ttf", 12);
-        label->setTextColor(Color4B::RED);
-        label->setAlignment(TextHAlignment::CENTER, TextVAlignment::CENTER);
-
-        label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 7));
-        this->addChild(label, 200);
     }
-
+	
 
     auto jumpscare = Sprite::create(JUMPSCARE);
     jumpscare->setScaleX(visibleSize.width / jumpscare->getContentSize().width / 3);
     jumpscare->setScaleY(visibleSize.width / jumpscare->getContentSize().width / 3);
     jumpscare->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(jumpscare, 200);
+	
 
     auto scale = ScaleTo::create(2.0f, 1.1f);
     jumpscare->runAction(scale);
 
 
     auto listener = EventListenerTouchOneByOne::create();
-    listener->onTouchBegan = [=](Touch *touch, Event *event) {
-        AudioEngine::stopAll();
-        deconstruct();
-        goToMainMenuScene(this);
-
-        return true;
-    };
+	listener->onTouchBegan = [=](Touch* touch, Event* event) {
+		destroyEvent(this, ui::Widget::TouchEventType::ENDED);
+		return true;
+	};
+	
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
@@ -417,11 +430,8 @@ void HelloWorld::showDrawScene() {
 
 
     auto listener = EventListenerTouchOneByOne::create();
-    listener->onTouchBegan = [=](Touch *touch, Event *event) {
-        AudioEngine::stopAll();
-        deconstruct();
-        goToMainMenuScene(this);
-
+    listener->onTouchBegan = [=](Touch* touch, Event* event) {
+        destroyEvent(this, ui::Widget::TouchEventType::ENDED);
         return true;
     };
 
@@ -445,20 +455,115 @@ cocos2d::Sprite *HelloWorld::createPieceSprite(const char *filename, cocos2d::Ve
     return sprite;
 }
 
-void HelloWorld::deconstruct() {
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            delete board[i][j].getPiece();
-        }
-    }
-
-    delete player1;
-    delete player2;
-}
-
 Vec2 *HelloWorld::getIndexOnClick(cocos2d::Vec2 touchLocation) {
     Size visibleSize = Director::getInstance()->getVisibleSize();
     int x = touchLocation.x / (visibleSize.width / 8);
     int y = touchLocation.y / (visibleSize.height / 8);
     return new Vec2(x, y);
+}
+
+void HelloWorld::onHttpRequestCompleted(cocos2d::network::HttpClient* sender, cocos2d::network::HttpResponse* response, Player* player) {
+    if (!response) {
+        isOnline = false;
+        return;
+    }
+
+    long statusCode = response->getResponseCode();
+	
+	if (response->isSucceed()) {
+        std::vector<char>* buffer = response->getResponseData();
+
+        std::string data(buffer->begin(), buffer->end());
+
+        setPlayerFields(data, player);
+
+        hidden->setString("Sent!");
+    } else {
+        isOnline = false;
+		hidden->setString("Something went wrong!");
+    }
+	
+	auto delay = DelayTime::create(1.5f);
+	auto hide = CallFunc::create([=]() {
+		hidden->setVisible(false);
+	});
+
+	auto sequence = Sequence::create(delay, hide, nullptr);
+	hidden->runAction(sequence);
+}
+
+void HelloWorld::onAddWinCompleted(cocos2d::network::HttpClient* sender, cocos2d::network::HttpResponse* response, Player* player) {
+    if (!response) {
+        return;
+    }
+
+    long statusCode = response->getResponseCode();
+
+    if (response->isSucceed()) {
+        std::vector<char>* buffer = response->getResponseData();
+
+        std::string data(buffer->begin(), buffer->end());
+
+        setPlayerFields(data, player);
+
+        hidden->setString("Player named " + player->name + "\nwith UID " + std::to_string(player->id) + " and " + std::to_string(player->score) + " wins won!");
+    }
+    else {
+		hidden->setString("Something went wrong!");
+	}
+}
+
+void HelloWorld::savePlayer(Player* player) {
+    std::string json = "{\"name\":\"" + player->name + "\"}";
+
+    network::HttpRequest* request = new (std::nothrow) network::HttpRequest();
+
+    std::string url = serverUrl + "/new";
+
+    request->setUrl(url);
+    request->setRequestType(network::HttpRequest::Type::POST);
+
+    std::vector <std::string> headers;
+    headers.push_back("Content-Type:application/json; charset=utf-8");
+
+    request->setHeaders(headers);
+    request->setRequestData(json.c_str(), json.size());
+    request->setResponseCallback(CC_CALLBACK_2(HelloWorld::onHttpRequestCompleted, this, player));
+
+    network::HttpClient::getInstance()->send(request);
+
+    request->release();
+
+    hidden->setString("Sending...");
+    hidden->setVisible(true);
+}
+
+void HelloWorld::setPlayerFields(std::string json, Player* player) {
+    rapidjson::Document document;
+
+    document.Parse(json.c_str());
+
+    rapidjson::Value& id = document["id"];
+    rapidjson::Value& name = document["name"];
+    rapidjson::Value& score = document["wins"];
+
+    player->id = id.GetInt();
+    player->name = name.GetString();
+    player->score = score.GetInt();
+}
+
+void HelloWorld::addWin(Player* player) {
+    std::string url = serverUrl;
+    url += "/" + std::to_string(player->id) + "/win";
+
+    network::HttpRequest* request = new network::HttpRequest();
+    request->setUrl(url.c_str());
+    request->setRequestType(network::HttpRequest::Type::PUT);
+    request->setResponseCallback(CC_CALLBACK_2(HelloWorld::onAddWinCompleted, this, player));
+
+    network::HttpClient::getInstance()->send(request);
+    request->release();
+
+    hidden->setString("Getting data...");
+    hidden->setVisible(true);
 }

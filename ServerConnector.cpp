@@ -30,8 +30,7 @@ void ServerConnector::savePlayer(Player *player) {
 
     network::HttpRequest *request = new network::HttpRequest();
 
-    std::string url = serverUrl;
-    url += "/add";
+    std::string url = serverUrl + "/add";
 
     request->setUrl(url);
     request->setRequestType(network::HttpRequest::Type::POST);

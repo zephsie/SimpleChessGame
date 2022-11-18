@@ -8,12 +8,13 @@
 #include "ui/CocosGUI.h"
 #include <string>
 #include "Player.h"
-#include "ServerConnector.h"
 
 class HelloWorld : public cocos2d::Scene, public cocos2d::ui::EditBoxDelegate {
 private:
 
     Spot **board;
+
+    std::string serverUrl;
 
     cocos2d::DrawNode *drawNodeBoard[8][8];
 
@@ -26,11 +27,9 @@ private:
 
     bool isFinished, isSelected, isOnline;
 
-	ServerConnector* serverConnector;
+    cocos2d::Label* hidden;
 
     cocos2d::Sprite *createPieceSprite(const char *filename, cocos2d::Vec2 position, float scale);
-
-    void deconstruct();
 
     cocos2d::Vec2 *getIndexOnClick(cocos2d::Vec2 touchLocation);
 
@@ -41,6 +40,24 @@ private:
     void showDrawScene();
 
     void goToMainMenuScene(cocos2d::Ref *sender);
+
+	void skipEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type);
+
+	void startEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type);
+
+	void drawEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type);
+	
+	void destroyEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type);
+
+    void onHttpRequestCompleted(cocos2d::network::HttpClient* sender, cocos2d::network::HttpResponse* response, Player* player);
+
+	void onAddWinCompleted(cocos2d::network::HttpClient* sender, cocos2d::network::HttpResponse* response, Player* player);
+
+    void savePlayer(Player* player);
+
+    void setPlayerFields(std::string json, Player* player);
+
+    void addWin(Player* player);
 
 public:
     static cocos2d::Scene *createScene();
