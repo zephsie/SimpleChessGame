@@ -212,6 +212,14 @@ bool HelloWorld::init() {
             } else {
                 delete board[7 - y][x].getPiece();
                 AudioEngine::play2d(CAPTURE_SOUND);
+
+                auto explosion = ParticleExplosion::create();
+				explosion->setPosition(Vec2(visibleSize.width / 8 * x + visibleSize.width / 16, visibleSize.height / 8 * y + visibleSize.height / 16));
+                explosion->setAutoRemoveOnFinish(true);
+                explosion->setStartColor(Color4F(255.0f, 0.0f, 0.0f, 1.0f));
+				explosion->setSpeed(250);	
+				explosion->setScale(0.5f);	
+				this->addChild(explosion, 1000);
             }
 
             board[7 - y][x].setPiece(board[7 - yPrev][xPrev].getPiece());
@@ -375,6 +383,11 @@ void HelloWorld::showWinScene() {
 	};
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+    auto emitter = ParticleFireworks::create();
+    emitter->setPosition(visibleSize.width / 2, 0);
+    emitter->setStartColor(Color4F(255.0f, 0.0f, 0.0f, 1.0f));
+    this->addChild(emitter, 1000);
 }
 
 void HelloWorld::showDrawScene() {
