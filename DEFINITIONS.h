@@ -33,6 +33,8 @@
 #define LOGO "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\LOGO.png"
 #define START "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\START.png"
 #define STARTP "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\STARTP.png"
+#define LEAVE "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\LEAVE.png"
+#define CHALICE "C:\\Users\\zephsie\\Documents\\SimpleChessGame\\SimpleChessGame\\Resources\\CHALICE.png"
 
 #define FONT "fonts/BleedingPixels.ttf"
 

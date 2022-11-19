@@ -113,6 +113,7 @@ bool HelloWorld::init() {
     hidden->setPosition(Vec2(visibleSize.width / 2, 6 * visibleSize.height / 7));
     hidden->setVisible(false);
     hidden->setTextColor(Color4B::RED);
+    hidden->setAlignment(TextHAlignment::CENTER);
     this->addChild(hidden, 1000);
 
     menuButton = ui::Button::create(MENU, MENU);
@@ -358,7 +359,6 @@ void HelloWorld::showWinScene() {
         this->addChild(winner, 200);
     } else {
         hidden->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 7));
-		hidden->setAlignment(TextHAlignment::CENTER);
 		
         if (turn == Color::WHITE) {
             addWin(player1);
@@ -383,11 +383,6 @@ void HelloWorld::showWinScene() {
 	};
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
-    auto emitter = ParticleFireworks::create();
-    emitter->setPosition(visibleSize.width / 2, 0);
-    emitter->setStartColor(Color4F(255.0f, 0.0f, 0.0f, 1.0f));
-    this->addChild(emitter, 1000);
 }
 
 void HelloWorld::showDrawScene() {
@@ -469,6 +464,8 @@ void HelloWorld::onSavePlayerCompleted(cocos2d::network::HttpClient* sender, coc
         isOnline = false;
 		hidden->setString("Something went wrong!");
     }
+
+    hidden->setVisible(true);
 	
 	auto delay = DelayTime::create(1.5f);
 	auto hide = CallFunc::create([=]() {
@@ -520,9 +517,6 @@ void HelloWorld::savePlayer(Player* player) {
     network::HttpClient::getInstance()->send(request);
 
     request->release();
-
-    hidden->setString("Sending...");
-    hidden->setVisible(true);
 }
 
 void HelloWorld::addWin(Player* player) {
