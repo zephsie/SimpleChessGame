@@ -75,7 +75,21 @@ bool MainMenu::init() {
     topPlayers->setVisible(false);
     topPlayers->setTextColor(Color4B::RED);
     topPlayers->setAlignment(TextHAlignment::CENTER);
-	this->addChild(topPlayers, 1000);
+    this->addChild(topPlayers, 1000);
+
+    auto fire1 = ParticleFire::create();
+    fire1->setPosition(Vec2(0, 0));
+    fire1->setStartColor(Color4F(255.0f, 0.0f, 0.0f, 1.0f));
+    fire1->setSpeed(250);
+    fire1->setScale(0.3f);
+    this->addChild(fire1, 1000);
+
+    auto fire2 = ParticleFire::create();
+    fire2->setPosition(Vec2(visibleSize.width, 0));
+    fire2->setStartColor(Color4F(255.0f, 0.0f, 0.0f, 1.0f));
+    fire2->setSpeed(250);
+    fire2->setScale(0.3f);
+    this->addChild(fire2, 1000);
 
     return true;
 }
@@ -86,7 +100,10 @@ void MainMenu::goToGameScene(cocos2d::Ref *sender) {
     cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(1, scene));
 }
 
-void MainMenu::showTopEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+void MainMenu::showTopEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {	
+    topPlayers->setString("Getting data...");
+    topPlayers->setVisible(true);
+	
     button->setEnabled(false);
 	leave->setEnabled(false);
 	chalice->setEnabled(false);
@@ -104,27 +121,35 @@ void MainMenu::showTopEvent(Ref* sender, cocos2d::ui::Widget::TouchEventType typ
 	
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-	auto blackFilter = cocos2d::LayerColor::create(Color4B(0, 0, 0, 255), visibleSize.width, visibleSize.height);
-	blackFilter->setPosition(cocos2d::Vec2(0, 0));
-	this->addChild(blackFilter);
+    auto filter = LayerColor::create(Color4B(0, 0, 0, 0));
+    this->addChild(filter, 500);
+    auto fade1 = FadeTo::create(1, 255);
+    filter->runAction(fade1);
 
 	auto listener = EventListenerTouchOneByOne::create();
 	
-	listener->onTouchBegan = [=](Touch* touch, Event* event) {
-		blackFilter->removeFromParent();
+	listener->onTouchBegan = [=](Touch* touch, Event* event) {		
+		auto fade2 = FadeTo::create(1, 0);
+		filter->runAction(fade2);
+	
         topPlayers->setVisible(false);
 
-        button->setEnabled(true);
-        leave->setEnabled(true);
-        chalice->setEnabled(true);
+		auto delay = DelayTime::create(1);
+		auto callback = CallFunc::create([=]() {
+			button->setEnabled(true);
+			leave->setEnabled(true);
+			chalice->setEnabled(true);
+			this->removeChild(filter);
+			
+			this->getEventDispatcher()->removeEventListener(listener);
+		});
+		
+		this->runAction(Sequence::create(delay, callback, nullptr));
 		
         return true;
 	};
 
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, blackFilter);
-
-    topPlayers->setVisible(true);
-    topPlayers->setString("Getting data...");
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, filter);
 }
 
 void MainMenu::onShowTopCompleted(cocos2d::network::HttpClient* sender, cocos2d::network::HttpResponse* response) {
@@ -155,7 +180,7 @@ void MainMenu::parseData(std::string json) {
 		std::string name = document[i]["name"].GetString();
 		int wins = document[i]["wins"].GetInt();
 
-        top += name + " - " + std::to_string(wins) + "wins\n\n";
+        top += name + " - " + std::to_string(wins) + " wins\n\n";
     }
 
     topPlayers->setString(top);

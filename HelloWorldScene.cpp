@@ -464,8 +464,6 @@ void HelloWorld::onSavePlayerCompleted(cocos2d::network::HttpClient* sender, coc
         isOnline = false;
 		hidden->setString("Something went wrong!");
     }
-
-    hidden->setVisible(true);
 	
 	auto delay = DelayTime::create(1.5f);
 	auto hide = CallFunc::create([=]() {
@@ -517,6 +515,9 @@ void HelloWorld::savePlayer(Player* player) {
     network::HttpClient::getInstance()->send(request);
 
     request->release();
+
+	hidden->setString("Sending...");
+	hidden->setVisible(true);
 }
 
 void HelloWorld::addWin(Player* player) {

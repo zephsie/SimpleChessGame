@@ -5,11 +5,11 @@
 #include "GamePiece.h"
 
 class KnightPiece : public GamePiece {
-private:
-    bool validation(int xStart, int yStart, int xEnd, int yEnd, Spot **board) override;
 
 public:
     KnightPiece(Color color) : GamePiece(color) {}
+
+    bool validation(int xStart, int yStart, int xEnd, int yEnd, Spot** board) override;
 };
 
 #endif

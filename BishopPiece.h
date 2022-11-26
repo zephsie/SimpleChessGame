@@ -4,11 +4,11 @@
 #include "GamePiece.h"
 
 class BishopPiece : public GamePiece {
-private:
-    bool validation(int xStart, int yStart, int xEnd, int yEnd, Spot **board) override;
 
 public:
     BishopPiece(Color color) : GamePiece(color) {}
+
+    bool validation(int xStart, int yStart, int xEnd, int yEnd, Spot** board) override;
 };
 
 #endif
